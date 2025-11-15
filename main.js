@@ -1,35 +1,84 @@
-//TODO add imports if needed
-//import { exMain } from "./exclude/exampleAss2.js"
-//TODO add/change doc as needed
 /**
- * TODO - Write functional code for this application. You can call any other function, but usage of ".toString(numberSystem)" and "Number.parseInt(number, numberSystem)" is forbidden (only permitted when used on individual digits).
- * The main function which calls the application. 
- * TODO - Please, add specific description here for the application purpose.
- * @param {string} inputNumber number that is being converted
- * @param {number} inputNumberSystem numerical system that the inputNumber is being converted from
- * @param {number} outputNumberSystem numerical system that the inputNumber is being converted into
- * @returns {string} containing number converted to output system
+ * @file Main logic for converting numbers
+ */
+
+/**
+ * Number goes from the ternary to the decimal system.
+ * @param {string} inputNumber number to convert (eg. "+00012")
+ * @param {number} inputNumberSystem from which system (tests will send 3)
+ * @param {number} outputNumberSystem to which system (tests will send 10)
+ * @returns {string} Converted number in decimal system (string)
  */
 export function main(inputNumber, inputNumberSystem, outputNumberSystem) {
-  //TODO code
-  //let dtoOut = exMain(inputNumber, inputNumberSystem, outputNumberSystem);
-  return dtoOut;
+    
+    if (inputNumberSystem !== 3 || outputNumberSystem !== 10) {
+        throw new Error("This converter can convert 3 -> 10");
+    }
+
+    if (inputNumber === null || inputNumber === undefined) {
+        throw new Error("Your input cannot be null or undefined");
+    }
+
+    const cleaned_input = inputNumber.trim();
+
+    let power_of_base = 1;
+    let decimal_result = 0;
+    let is_negative = false;
+    let line_to_convert = "";
+
+    if (cleaned_input.length === 0) {
+        throw new Error("Your input is empty");
+    }
+    
+    const firstChar = cleaned_input[0];
+
+    if (firstChar === '-') {
+        is_negative = true;
+        line_to_convert = cleaned_input.substring(1);
+    } else if (firstChar === '+') {
+        line_to_convert = cleaned_input.substring(1);
+    } else {
+        line_to_convert = cleaned_input;
+    }
+    
+    if (line_to_convert.length === 0) {
+        throw new Error("Your input has only a sign");
+    }
+
+    const validDigits = "012"; 
+    for (let i = 0; i < line_to_convert.length; i++) {
+        const char = line_to_convert[i];
+        if (validDigits.includes(char) === false) {
+            throw new Error("Your input has invalid digits");
+        }
+    }
+
+    for (let i = line_to_convert.length - 1; i >= 0; i--) {
+        const char = line_to_convert[i];
+        const n = Number(char);
+        decimal_result = decimal_result + (n * power_of_base);
+        power_of_base = power_of_base * 3; 
+    }
+    
+    if (is_negative) {
+        decimal_result = decimal_result * -1;
+    }
+
+    return String(decimal_result);
 }
 
 /**
- * TODO - Change this to contain all input number systems that your application can convert from.
- * Function which returns which number systems are permitted on input.
- * @returns {Array} array of numbers refering to permitted input systems
+ * Defines allowed input number systems.
+ * @returns {Array} field of allowed input systems
  */
 export function permittedInputSystems() {
-	return [10, 2];
+  return [3];
 }
 
 /**
- * TODO - Change this to contain all output number systems that your application can convert to.
- * Function which returns which number systems are permitted on output.
- * @returns {Array} array of numbers refering to permitted output systems
+ * Defines allowed output number systems.
+ * @returns {Array} field of allowed output systems
  */
 export function permittedOutputSystems() {
-	return [10, 2];
+  return [10];
 }
